@@ -1,0 +1,54 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+#define maxpackets 10
+
+void leaky(int bmax , int rate)
+{
+  int current_packet;
+  int buffersize = 0;
+  for( int i = 0; i < maxpackets; i++ )
+     {
+       current_packet = rand();
+       current_packet = (current_packet%bmax) + 50;
+       printf("Current packet size is %d", current_packet);
+       if( current_packet > bmax-buffersize ){
+         printf("\nInsufficient space , dropping packet\n");
+        }
+       else{
+         buffersize += current_packet;
+         printf("\nPacket added to the buffer with size %d\n",current_packet);
+         if( buffersize >= rate ) {
+           buffersize -= rate;
+           printf("\nbytes sent is %d\n",rate);
+         }
+         else{
+           printf("\nbytes sent is %d\n",buffersize);
+           buffersize = 0;
+         } 
+       printf("\ncurrent size of buffer is %d\n",buffersize);        
+         }
+      }
+  while( buffersize > 0 )
+    {
+       if( buffersize >= rate ){
+       buffersize -= rate;
+       printf("\nbytes sent is:%d\n",rate);
+       printf("\nBuffer size is:%d",buffersize);
+       }
+       else
+       {
+        printf("\nbytes sent is:%d",buffersize);
+        printf("\nNo more data to send\n");
+        buffersize = 0;
+       }
+    }
+ }
+   
+int main() {
+int buffersize , outputrate;
+printf("\nEnter buffer size and output rate\n");
+scanf("%d %d",&buffersize,&outputrate);
+leaky(buffersize,outputrate);
+return 0;
+}
