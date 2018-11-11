@@ -1,0 +1,133 @@
+import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+
+public class icheck {
+
+public static String sum(String b1, String b2) {
+    int len1 = b1.length();
+    int len2 = b2.length();
+    int carry = 0;
+    String res = "";
+    // the final length of the result depends on the bigger length between b1
+    // and b,
+    // (also the value of carry, if carry = 1, add "1" at the head of result,
+    // otherwise)
+    int maxLen = Math.max(len1, len2);
+    for (int i = 0; i < maxLen; i++) {
+
+      // start from last char of String b1 and b2
+      // notice that left side is an int and right side is char
+      // so we need to minus the decimal value of '0'
+      int p = i < len1 ? b1.charAt(len1 - 1 - i) - '0' : 0;
+      int q = i < len2 ? b2.charAt(len2 - 1 - i) - '0' : 0;
+      int tmp = p + q + carry;
+      carry = tmp / 2;
+      res = tmp % 2 + res;
+    }
+    return (carry == 0) ? res : "1" + res;
+  }
+static Scanner in = new Scanner(System.in);
+  public static void main(String args[])
+      {   String[] checksum , checksumtry , correctedword;
+          String sendword;
+          int flag = 0;
+          System.out.println("Enter the data to send ( in binary only )");
+          String data = in.next();
+          checksum = new String[data.length()];
+          for( int i = 0; i < data.length(); i++ )
+             {
+               if((data.charAt(i)) == '0') {
+                  checksum[i] = "1";
+                }
+               else if( (data.charAt(i)) == '1') {
+                  checksum[i] = "0";
+                }
+             }
+         System.out.println("Checksum is:");
+         for( int j = 0; j < checksum.length; j++ )
+           {
+               System.out.print(checksum[j] + " " );
+           }
+       System.out.println("\nEnter the code retrieved at the senders side");
+       sendword = in.next();
+       String senderchecksum = Arrays.toString(checksum);
+       senderchecksum = senderchecksum.substring(1, senderchecksum.length()-1).replace(",", "");
+       senderchecksum = senderchecksum.replace(" ","");
+       String sendercode = sum( sendword, senderchecksum );
+       if( sendercode.length() > 4 )
+       {
+          flag = 5;
+          String first = sendercode.substring(0, 1);
+          first = "0" + "0" + "0" + first;
+          String last = sendercode.substring(2,5);
+          sendercode = sum( last , first );
+       }
+       checksumtry = new String[sendercode.length()];
+       for( int i = 0; i < sendercode.length(); i++ )
+             {
+               
+               if((sendercode.charAt(i)) == '0') {
+                  checksumtry[i] = "1";
+                }
+               else if( (sendercode.charAt(i)) == '1') {
+                  checksumtry[i] = "0";
+                }
+             
+             }
+       correctedword = new String[sendword.length()];
+      if( flag == 0 )
+     {
+       outer:  for( int j = 0; j < checksumtry.length; j++ )
+           {
+               if(checksumtry[j].equals("1"))
+                  {
+                    System.out.println("Error detected at position" + " " + (j+1));
+                     if( sendword.charAt(j) == '1' )
+                        {
+                           correctedword[j] = "0";
+                        }
+                    else if( sendword.charAt(j) == '0' )
+                        {
+                          correctedword[j] = "1";
+                        }
+                  }
+            else{
+             correctedword[j] = String.valueOf(sendword.charAt(j));
+               }
+           }
+    System.out.println("Corrected data is: " );
+     for( int u = 0; u < sendword.length(); u++ )
+         {
+           System.out.print( correctedword[u] + " " );
+          }
+    }
+ else if( flag == 5 )
+   {
+     outer1:  for( int j = 0; j < checksumtry.length; j++ )
+           {
+               if(checksumtry[j].equals("0"))
+                  {
+                    System.out.println("Error detected at position" + " " +  (j+1));
+                     if( sendword.charAt(j) == '1' )
+                        {
+                           correctedword[j] = "0";
+                        }
+                    else if( sendword.charAt(j) == '0' )
+                        {
+                          correctedword[j] = "1";
+                        }
+                  }
+            else{
+             correctedword[j] = String.valueOf(sendword.charAt(j));
+               }
+           }
+    System.out.println("Corrected data is: " );
+     for( int u = 0; u < sendword.length(); u++ )
+         {
+           System.out.print( correctedword[u] + " " );
+          }
+  }
+        }
+}
+
